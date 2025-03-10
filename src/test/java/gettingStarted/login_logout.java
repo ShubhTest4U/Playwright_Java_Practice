@@ -1,0 +1,64 @@
+package gettingStarted;
+
+import java.util.regex.Pattern;
+
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.assertions.PlaywrightAssertions;
+
+public class login_logout {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Browser bt = null;
+		Page pg = null;
+
+		try {
+
+			bt = Playwright.create().chromium()
+					.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(2000));
+			pg = bt.newPage();
+			pg.navigate("https://freelance-learn-automation.vercel.app/login");
+
+			PlaywrightAssertions.assertThat(pg).hasTitle("Learn Automation Courses");
+
+			// ID locator
+			// pg.locator("#email1").fill("admin@email.com");
+
+			// Xpath locator
+			// pg.locator("xpath=//input[@name='email1']").fill("admin@email.com");
+
+			// Css selector locator
+			pg.locator("css=input[name='email1']").fill("admin@email.com");
+
+			// Placeholder locator
+			pg.getByPlaceholder("Enter Password").fill("admin@123");
+
+			// text locator and index
+			// pg.getByText("Sign in").nth(1).click();
+
+			// last index
+			pg.getByText("Sign in").last().click();
+
+			// class locator
+			Locator cls = pg.locator(".welcomeMessage");
+			PlaywrightAssertions.assertThat(cls).containsText("Welcome");
+
+			pg.getByAltText("menu").click();
+			pg.locator("css=button[class='nav-menu-item']").click();
+
+			PlaywrightAssertions.assertThat(pg).hasURL(Pattern.compile("login"));
+
+			// pg.waitForTimeout(7000);
+
+		} finally {
+			pg.close();
+			bt.close();
+		}
+	}
+
+}
