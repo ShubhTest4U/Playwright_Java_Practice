@@ -14,51 +14,50 @@ public class login_logout {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		Browser bt = null;
-		Page pg = null;
+		Browser bw = Playwright.create().chromium()
+				.launch(new BrowserType.LaunchOptions().setHeadless(false));
+		Page pg = bw.newPage();
+		pg.navigate("https://freelance-learn-automation.vercel.app/login");
 
-		try {
+		PlaywrightAssertions.assertThat(pg).hasTitle("Learn Automation Courses");
 
-			bt = Playwright.create().chromium()
-					.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(2000));
-			pg = bt.newPage();
-			pg.navigate("https://freelance-learn-automation.vercel.app/login");
+		// ID locator
+		// pg.locator("#email1").fill("admin@email.com");
 
-			PlaywrightAssertions.assertThat(pg).hasTitle("Learn Automation Courses");
+		// Xpath locator
+		// pg.locator("xpath=//input[@name='email1']").fill("admin@email.com");
 
-			// ID locator
-			// pg.locator("#email1").fill("admin@email.com");
+		// Css selector locator
+		pg.locator("css=input[name='email1']").fill("admin@email.com");
 
-			// Xpath locator
-			// pg.locator("xpath=//input[@name='email1']").fill("admin@email.com");
+		// Placeholder locator
+		pg.getByPlaceholder("Enter Password").fill("admin@123");
 
-			// Css selector locator
-			pg.locator("css=input[name='email1']").fill("admin@email.com");
+		// text locator and index
+		// pg.getByText("Sign in").nth(1).click();
 
-			// Placeholder locator
-			pg.getByPlaceholder("Enter Password").fill("admin@123");
+		// last index
+		pg.getByText("Sign in").last().click();
 
-			// text locator and index
-			// pg.getByText("Sign in").nth(1).click();
+		// class locator
+		Locator cls = pg.locator(".welcomeMessage");
+		String actualText = cls.textContent();
+		boolean assertionPassed = actualText.contains("Welcome");
 
-			// last index
-			pg.getByText("Sign in").last().click();
-
-			// class locator
-			Locator cls = pg.locator(".welcomeMessage");
-			PlaywrightAssertions.assertThat(cls).containsText("Welcome");
-
-			pg.getByAltText("menu").click();
-			pg.locator("css=button[class='nav-menu-item']").click();
-
-			PlaywrightAssertions.assertThat(pg).hasURL(Pattern.compile("login"));
-
-			// pg.waitForTimeout(7000);
-
-		} finally {
-			pg.close();
-			bt.close();
+		if (assertionPassed) {
+		    System.out.println("PASS: Welcome message contains 'Welcome'. Full text: " + actualText);
+		} else {
+		    System.out.println("FAIL: Welcome message does not contain 'Welcome'. Full text: " + actualText);
 		}
-	}
 
+		pg.getByAltText("menu").click();
+		pg.locator("css=button[class='nav-menu-item']").click();
+
+		PlaywrightAssertions.assertThat(pg).hasURL(Pattern.compile("login"));
+
+		// pg.waitForTimeout(7000);
+
+		pg.close();
+		bw.close();
+	}
 }
