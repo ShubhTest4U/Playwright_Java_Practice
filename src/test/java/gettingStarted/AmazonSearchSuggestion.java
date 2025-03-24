@@ -18,7 +18,7 @@ public class AmazonSearchSuggestion {
 	public static void main(String[] args) {
 
 		Browser bw = Playwright.create().chromium()
-				.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(5000));
+				.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(300));
 		Page pg = bw.newPage();
 		pg.navigate("https://www.amazon.in/");
 		Locator inputbox = pg.locator("#twotabsearchtextbox");
